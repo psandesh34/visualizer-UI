@@ -4,15 +4,14 @@
 
 <div class="content" role="main">
   <div class="card-container">
-    <!-- <button class="anchor card" (click)="pieChart">
-      <span> Pie Chart </span>
-   </button>
-   <button class="anchor card" (click)="bubbleChart">
-    <span>Bubble Chart</span>
-  </button> -->
-    <app-charts *ngIf="loadedFeature === 'charts' && holdings" [holdings]="holdings"></app-charts>
+    <app-charts
+      *ngIf="loadedFeature === 'charts' && holdings"
+      [holdings]="holdings"
+    ></app-charts>
     <app-upload *ngIf="loadedFeature === 'upload'"></app-upload>
   </div>
 </div>
-<app-dashboard *ngIf="(loadedFeature === 'dashboard') && holdings" [holdings]="holdings"></app-dashboard>
-
+<app-dashboard
+  *ngIf="loadedFeature === 'dashboard' && holdings"
+  [holdings]="holdings"
+></app-dashboard>

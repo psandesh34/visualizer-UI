@@ -1,7 +1,7 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { AppComponent } from "./app.component";
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgApexchartsModule } from "ng-apexcharts";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { headerComponent } from './components/header/header.component';
@@ -13,7 +13,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { PortfolioComponent } from './components/portfolio/portfolio.component';
 import { MaterialModule } from './shared/material/material.module';
 import { HttpClientModule } from '@angular/common/http';
-
+import { UploadTradebookDialogComponent } from "./components/portfolio/upload-tradebook-dialog/upload-tradebook-dialog.component";
 
 @NgModule({
   declarations: [AppComponent,
@@ -22,16 +22,26 @@ import { HttpClientModule } from '@angular/common/http';
     ChartsComponent,
     DashboardComponent,
     UploadComponent,
-    PortfolioComponent
+    PortfolioComponent,
+    UploadTradebookDialogComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     NgApexchartsModule,
     BrowserAnimationsModule,
-    MatSortModule, 
-    MaterialModule, 
+    MatSortModule,
+    MaterialModule,
     HttpClientModule
+  ],
+  exports: [AppComponent,
+    headerComponent,
+    Dropdowndirective,
+    ChartsComponent,
+    DashboardComponent,
+    UploadComponent,
+    PortfolioComponent,
   ],
   providers: [],
   bootstrap: [AppComponent]

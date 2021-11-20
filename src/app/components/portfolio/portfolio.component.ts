@@ -1,8 +1,18 @@
-import { AfterViewInit, Component, OnInit, ViewChild, Injectable, Input, OnChanges } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  OnInit,
+  ViewChild,
+  Injectable,
+  Input,
+  OnChanges,
+} from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { HttpClient } from '@angular/common/http';
+import { UploadTradebookDialogComponent } from './upload-tradebook-dialog/upload-tradebook-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 export interface UserData {
   id: string;
@@ -14,32 +24,30 @@ export interface UserData {
 @Component({
   selector: 'app-portfolio',
   templateUrl: './portfolio.component.html',
-  styleUrls: ['./portfolio.component.css']
+  styleUrls: ['./portfolio.component.css'],
 })
 export class PortfolioComponent implements AfterViewInit, OnInit, OnChanges {
-  @Input() holdings:any;
+  @Input() holdings: any;
   displayedColumns: string[] = [
-    'index', 
-    'symbol', 
-    'totalQuantity', 
-    'averagePrice', 
-    'lastTradedPrice', 
+    'index',
+    'symbol',
+    'totalQuantity',
+    'averagePrice',
+    'lastTradedPrice',
     'investedAmount',
     'currentValue',
     'profitLoss',
-    'profitLossPercentage'
+    'profitLossPercentage',
   ];
   dataSource: MatTableDataSource<UserData>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient, public dialog: MatDialog) {}
 
-  ngOnInit() {
-  }
-  
+  ngOnInit() {}
+
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
@@ -58,5 +66,12 @@ export class PortfolioComponent implements AfterViewInit, OnInit, OnChanges {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  // Create the method.
+  importTradebook() {
+    const dialogRef = this.dialog.open(UploadTradebookDialogComponent, {
+      data: {},
+    });
   }
 }

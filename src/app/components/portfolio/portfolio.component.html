@@ -1,5 +1,5 @@
-<div class="fullDiv" *ngIf="holdings">
-  <div class="filterInput">
+<div class="main" *ngIf="holdings">
+  <div class="toolsRow">
     <mat-form-field appearance="standard">
       <mat-label>Filter</mat-label>
       <input
@@ -9,14 +9,30 @@
         #input
       />
     </mat-form-field>
+    <button class="elevated-button primary-button" (click)="importTradebook()">
+      <span> Import </span>
+    </button>
+    <button
+      class="elevated-button danger-button"
+      mat-ripple
+      [matRippleCentered]="true"
+      [matRippleUnbounded]="false"
+      [matRippleRadius]="100"
+      (click)="importTradebook()"
+    >
+      <span> Delete </span>
+    </button>
   </div>
+
   <div class="matTable">
     <div class="mat-elevation-z8">
       <table mat-table [dataSource]="dataSource" matSort>
         <!-- Index Column -->
         <ng-container matColumnDef="index">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Index</th>
-          <td mat-cell *matCellDef="let element; let i = index">{{ i }}</td>
+          <td mat-cell *matCellDef="let element; let i = index">
+            {{ i + 1 + paginator.pageIndex * paginator.pageSize }}
+          </td>
         </ng-container>
 
         <!-- Symbol Column -->

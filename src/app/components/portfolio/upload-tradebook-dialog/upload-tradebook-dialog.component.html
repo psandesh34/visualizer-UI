@@ -1,0 +1,24 @@
+<div class="createEntitlement">
+  <div mat-dialog-content>
+    <form [formGroup]="myForm" enctype="multipart/form-data">
+      <input
+        type="file"
+        (change)="fileChange($event)"
+        placeholder="Upload file"
+        accept=".csv"
+      />
+    </form>
+  </div>
+  <div mat-dialog-actions [align]="'center'">
+    <button
+      mat-raised-button
+      mat-dialog-close
+      color="primary"
+      [disabled]="myForm.invalid"
+      (click)="doAction()"
+    >
+      Save
+    </button>
+    <button mat-raised-button mat-dialog-close>Cancel</button>
+  </div>
+</div>
