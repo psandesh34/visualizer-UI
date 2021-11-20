@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ChartComponent } from 'ng-apexcharts';
+import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-root',
@@ -10,6 +12,7 @@ import { ChartComponent } from 'ng-apexcharts';
 export class AppComponent implements OnInit {
   active = 1;
   title = 'visualizer';
+  dialogRef: MatDialogRef<ConfirmationDialogComponent>;
   public holdings = [];
   @ViewChild('chart') chart: ChartComponent;
 
@@ -21,7 +24,7 @@ export class AppComponent implements OnInit {
     this.loadedFeature = feature;
   }
 
-  constructor(public http: HttpClient) {}
+  constructor(public http: HttpClient, public dialog: MatDialog) {}
 
   ngOnInit() {
     this.http
@@ -45,5 +48,19 @@ export class AppComponent implements OnInit {
           ).toFixed(2);
         });
       });
+  }
+
+  openConfirmationDialog() {
+    this.dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      disableClose: false
+    });
+    this.dialogRef.componentInstance.confirmMessage = "Are you sure you want to delete?"
+
+    this.dialogRef.afterClosed().subscribe(result => {
+      if(result) {
+        // do confirmation actions
+      }
+      // this.dialogRef = null;
+    });
   }
 }

@@ -14,6 +14,7 @@ import { PortfolioComponent } from './components/portfolio/portfolio.component';
 import { MaterialModule } from './shared/material/material.module';
 import { HttpClientModule } from '@angular/common/http';
 import { UploadTradebookDialogComponent } from "./components/portfolio/upload-tradebook-dialog/upload-tradebook-dialog.component";
+import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 
 @NgModule({
   declarations: [AppComponent,
@@ -23,7 +24,8 @@ import { UploadTradebookDialogComponent } from "./components/portfolio/upload-tr
     DashboardComponent,
     UploadComponent,
     PortfolioComponent,
-    UploadTradebookDialogComponent
+    UploadTradebookDialogComponent,
+    ConfirmationDialogComponent
   ],
   imports: [
     BrowserModule,

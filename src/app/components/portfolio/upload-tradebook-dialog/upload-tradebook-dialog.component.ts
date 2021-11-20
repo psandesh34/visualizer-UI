@@ -36,8 +36,8 @@ export class UploadTradebookDialogComponent implements OnInit, OnDestroy {
       let file: File = fileList[0];
       let formData: FormData = new FormData();
       formData.append('file', file, file.name);
+      formData.append('userId', 'myUserId');
       let myHeaders = new Headers();
-      /** In Angular 5, including the header Content-Type can invalidate your request */
       myHeaders.append('Content-Type', 'multipart/form-data');
       myHeaders.append('Accept', 'application/json');
       const httpOptions = {
@@ -45,17 +45,12 @@ export class UploadTradebookDialogComponent implements OnInit, OnDestroy {
           Accept: 'application/json',
         }),
       };
-      console.log(
-        `UploadTradebookDialogComponent ~ fileChange ~ headers`,
-        httpOptions
-      );
       this.http
         .post(`http://localhost:3000/tradebook/upload`, formData, httpOptions)
         .pipe(catchError(handleError))
         .subscribe(
           (data) => {
             console.log('success');
-            console.log(data);
           },
           (error) => console.log(error)
         );

@@ -12,8 +12,9 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { HttpClient } from '@angular/common/http';
 import { UploadTradebookDialogComponent } from './upload-tradebook-dialog/upload-tradebook-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
-
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import * as helper from '../../shared/helper';
 export interface UserData {
   id: string;
   name: string;
@@ -27,6 +28,7 @@ export interface UserData {
   styleUrls: ['./portfolio.component.css'],
 })
 export class PortfolioComponent implements AfterViewInit, OnInit, OnChanges {
+  confirmationDialogRef: MatDialogRef<ConfirmationDialogComponent>;
   @Input() holdings: any;
   displayedColumns: string[] = [
     'index',
@@ -73,5 +75,37 @@ export class PortfolioComponent implements AfterViewInit, OnInit, OnChanges {
     const dialogRef = this.dialog.open(UploadTradebookDialogComponent, {
       data: {},
     });
+  }
+
+  deletePortfolio() {
+    let confirmResult = this.openConfirmationDialog();
+    this.confirmationDialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      disableClose: false,
+    });
+    this.confirmationDialogRef.componentInstance.confirmMessage =
+      'Are you sure you want to delete?';
+
+    this.confirmationDialogRef.afterClosed().subscribe((result) => {
+
+      if (result) {
+        this.http.delete('http://localhost:3000/portfolio/myUserId').subscribe(
+          (response) => {
+            console.log(
+              `PortfolioComponent ~ this.deleteHoldings ~ response`,
+              response
+            );
+          },
+          (error) => {
+            helper.handleError(error);
+          }
+        );
+      }
+    });
+  }
+
+  openConfirmationDialog(): boolean {
+    let confirmResult = false;
+
+    return confirmResult;
   }
 }
