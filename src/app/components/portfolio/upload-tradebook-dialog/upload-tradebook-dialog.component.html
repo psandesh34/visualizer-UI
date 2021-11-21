@@ -6,6 +6,7 @@
         (change)="fileChange($event)"
         placeholder="Upload file"
         accept=".csv"
+        formControlName="file"
       />
     </form>
   </div>
@@ -15,7 +16,7 @@
       mat-dialog-close
       color="primary"
       [disabled]="myForm.invalid"
-      (click)="doAction()"
+      (click)="uploadTradebook()"
     >
       Save
     </button>

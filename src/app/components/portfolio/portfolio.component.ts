@@ -86,7 +86,6 @@ export class PortfolioComponent implements AfterViewInit, OnInit, OnChanges {
       'Are you sure you want to delete?';
 
     this.confirmationDialogRef.afterClosed().subscribe((result) => {
-
       if (result) {
         this.http.delete('http://localhost:3000/portfolio/myUserId').subscribe(
           (response) => {

@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { map, catchError } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { handleError } from 'src/app/shared/helper';
 
 @Component({
@@ -13,6 +12,7 @@ import { handleError } from 'src/app/shared/helper';
 })
 export class UploadTradebookDialogComponent implements OnInit, OnDestroy {
   public myForm: FormGroup;
+  fileList: FileList;
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private formBuilder: FormBuilder,
@@ -20,20 +20,17 @@ export class UploadTradebookDialogComponent implements OnInit, OnDestroy {
     private http: HttpClient
   ) {
     this.myForm = this.formBuilder.group({
-      file: ['', Validators.required],
+      file: new FormControl('',[Validators.required]),
     });
   }
   ngOnInit(): void {}
 
   ngOnDestroy(): void {}
-  public doAction() {
+  public uploadTradebook() {
     this.dialogRef.close(this.myForm.getRawValue());
-  }
-
-  fileChange(event: any) {
-    let fileList: FileList = event.target.files;
-    if (fileList.length > 0) {
-      let file: File = fileList[0];
+    //Add a snackbar here saying started importing
+    if (this.fileList.length > 0) {
+      let file: File = this.fileList[0];
       let formData: FormData = new FormData();
       formData.append('file', file, file.name);
       formData.append('userId', 'myUserId');
@@ -55,5 +52,9 @@ export class UploadTradebookDialogComponent implements OnInit, OnDestroy {
           (error) => console.log(error)
         );
     }
+  }
+
+  fileChange(event: any) {
+    this.fileList = event.target.files;
   }
 }
