@@ -1,2 +1,19 @@
-<div><app-charts *ngIf="holdings" [holdings]="holdings"></app-charts></div>
-<div><app-portfolio [holdings]="holdings" *ngIf="holdings"></app-portfolio></div>
+<!-- <div><app-charts *ngIf="holdings" [holdings]="holdings"></app-charts></div> -->
+<div class="centred">
+  <mat-card *ngIf="requestExecuted">
+    <mat-card-title>Welcome user</mat-card-title>
+    <mat-card-subtitle>Show user info here</mat-card-subtitle>
+    <mat-card-content>
+      Show investment stats here
+      <div *ngIf="!holdings.length">
+        <span> You have not imported your portfolio, start here!</span>
+        <button mat-button (click)="importTradebook()">Import</button>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button *ngIf="holdings.length" routerLink="/portfolio">
+        View portfolio
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

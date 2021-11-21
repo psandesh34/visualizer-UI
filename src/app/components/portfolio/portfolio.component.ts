@@ -6,6 +6,7 @@ import {
   Injectable,
   Input,
   OnChanges,
+  OnDestroy,
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -15,6 +16,9 @@ import { UploadTradebookDialogComponent } from './upload-tradebook-dialog/upload
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import * as helper from '../../shared/helper';
+import { Router } from '@angular/router';
+import { SharedDataService } from 'src/app/shared/sharedDataService';
+
 export interface UserData {
   id: string;
   name: string;
@@ -27,11 +31,12 @@ export interface UserData {
   templateUrl: './portfolio.component.html',
   styleUrls: ['./portfolio.component.css'],
 })
-export class PortfolioComponent implements AfterViewInit, OnInit, OnChanges {
+export class PortfolioComponent
+  implements AfterViewInit, OnInit, OnChanges, OnDestroy
+{
   confirmationDialogRef: MatDialogRef<ConfirmationDialogComponent>;
   @Input() holdings: any;
   displayedColumns: string[] = [
-    'index',
     'symbol',
     'totalQuantity',
     'averagePrice',
@@ -46,9 +51,22 @@ export class PortfolioComponent implements AfterViewInit, OnInit, OnChanges {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private http: HttpClient, public dialog: MatDialog) {}
+  constructor(
+    private http: HttpClient,
+    public dialog: MatDialog,
+    public router: Router,
+    private sharedDataService: SharedDataService
+  ) {
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.sharedDataService.getValue().subscribe((data) => {
+      if (data.holdings?.length > 0) this.holdings = data.holdings;
+    });
+    this.dataSource = new MatTableDataSource(this.holdings);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -56,9 +74,9 @@ export class PortfolioComponent implements AfterViewInit, OnInit, OnChanges {
   }
 
   ngOnChanges() {
-    this.dataSource = new MatTableDataSource(this.holdings);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+  }
+
+  ngOnDestroy() {
   }
 
   applyFilter(event: Event) {
@@ -89,18 +107,17 @@ export class PortfolioComponent implements AfterViewInit, OnInit, OnChanges {
       if (result) {
         this.http.delete('http://localhost:3000/portfolio/myUserId').subscribe(
           (response) => {
-            console.log(
-              `PortfolioComponent ~ this.deleteHoldings ~ response`,
-              response
-            );
           },
           (error) => {
             helper.handleError(error);
           }
         );
       }
+      this.router.navigate(['/dashboard']);
     });
   }
+
+  getPortfolio() {}
 
   openConfirmationDialog(): boolean {
     let confirmResult = false;

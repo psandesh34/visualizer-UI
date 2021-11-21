@@ -1,17 +1,14 @@
 <!-- Toolbar -->
 
-<app-header (featureSelected)="onNavigate($event)"></app-header>
+<!-- <h1>heheh</h1> -->
+<app-header></app-header>
+<div><router-outlet></router-outlet></div>
+<!-- <app-header (featureSelected)="onNavigate($event)"></app-header> -->
 
-<div class="content" role="main">
+<!-- <div class="content" role="main">
   <div class="card-container">
-    <app-charts
-      *ngIf="loadedFeature === 'charts' && holdings"
-      [holdings]="holdings"
-    ></app-charts>
+    <app-charts *ngIf="loadedFeature === 'charts'"></app-charts>
     <app-upload *ngIf="loadedFeature === 'upload'"></app-upload>
   </div>
 </div>
-<app-dashboard
-  *ngIf="loadedFeature === 'dashboard' && holdings"
-  [holdings]="holdings"
-></app-dashboard>
+<app-dashboard *ngIf="loadedFeature === 'dashboard'"></app-dashboard> -->

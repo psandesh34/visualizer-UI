@@ -1,3 +1,4 @@
+<div><app-charts *ngIf="holdings" [holdings]="holdings"></app-charts></div>
 <div class="main" *ngIf="holdings">
   <div class="toolsRow">
     <mat-form-field appearance="standard">
@@ -9,9 +10,6 @@
         #input
       />
     </mat-form-field>
-    <button class="elevated-button primary-button" (click)="importTradebook()">
-      <span> Import </span>
-    </button>
     <button
       class="elevated-button danger-button"
       mat-ripple
@@ -27,14 +25,6 @@
   <div class="matTable">
     <div class="mat-elevation-z8">
       <table mat-table [dataSource]="dataSource" matSort>
-        <!-- Index Column -->
-        <ng-container matColumnDef="index">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Index</th>
-          <td mat-cell *matCellDef="let element; let i = index">
-            {{ i + 1 + paginator.pageIndex * paginator.pageSize }}
-          </td>
-        </ng-container>
-
         <!-- Symbol Column -->
         <ng-container matColumnDef="symbol">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Symbol</th>
