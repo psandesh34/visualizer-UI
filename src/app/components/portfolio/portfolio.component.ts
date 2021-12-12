@@ -1,4 +1,10 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -10,7 +16,8 @@ import { snackbarError, snackbarSuccess } from '../../shared/helper';
 import { Router } from '@angular/router';
 import { SharedDataService } from 'src/app/shared/sharedDataService';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
 export interface UserData {
   id: string;
   name: string;
@@ -37,6 +44,7 @@ export class PortfolioComponent implements AfterViewInit, OnInit {
     'profitLossPercentage',
   ];
   dataSource: MatTableDataSource<UserData>;
+  chartData = undefined;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -56,12 +64,17 @@ export class PortfolioComponent implements AfterViewInit, OnInit {
         this.holdings = holdings;
         this.loadTableData();
       });
+    if (this.chartData === undefined) {
+      this.sharedDataService
+        .getValue({ chartData: 1 })
+        .subscribe((chartData: any) => {
+          this.sharedDataService.getValue({ chartData: 1 });
+          this.chartData = chartData;
+        });
+    }
     if (this.holdings.length === 0) {
       this.getPortfolio();
     }
-    this.dataSource = new MatTableDataSource(this.holdings);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
   }
 
   ngAfterViewInit() {
@@ -117,7 +130,8 @@ export class PortfolioComponent implements AfterViewInit, OnInit {
   getPortfolio() {
     this.http.get<any>('http://localhost:3000/holdings/myUserId').subscribe({
       next: (data) => {
-        this.holdings = data;
+        this.holdings = data.holdings;
+        this.chartData = data.chartData;
         this.holdings.forEach((element: any) => {
           element.currentValue = +(
             element.totalQuantity * element.lastTradedPrice
@@ -132,6 +146,7 @@ export class PortfolioComponent implements AfterViewInit, OnInit {
           ).toFixed(2);
         });
         this.sharedDataService.setValue({ holdings: this.holdings });
+        this.sharedDataService.setValue({ chartData: data.chartData });
         this.loadTableData();
       },
       error: (error) => {

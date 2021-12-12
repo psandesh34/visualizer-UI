@@ -1,4 +1,5 @@
-#charts {
+.main {
     display: flex;
-    justify-content: space-around;
+    flex-direction: row;
+    justify-content: space-evenly;
 }

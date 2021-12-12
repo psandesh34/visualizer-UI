@@ -32,6 +32,7 @@ export class DashboardComponent implements OnInit {
       .subscribe((amount: any) => {
         this.totalInvestedAmount = amount;
       });
+    // get totalInvestedAmount if not found in saved data
     if (!this.totalInvestedAmount) {
       this.http
         .get<any>('http://localhost:3000/holdings/overview/myUserId')
@@ -41,6 +42,7 @@ export class DashboardComponent implements OnInit {
               this.totalInvestedAmount = parseFloat(
                 data.totalInvestedAmount.toFixed(2)
               );
+              // save totalInvestedAmount in shared data
               this.sharedDataService.setValue({
                 totalInvestedAmount: this.totalInvestedAmount,
               });
@@ -58,7 +60,7 @@ export class DashboardComponent implements OnInit {
   getPortfolio() {
     this.http.get<any>('http://localhost:3000/holdings/myUserId').subscribe({
       next: (data) => {
-        this.holdings = data;
+        this.holdings = data.holdings;
         this.holdings.forEach((element: any) => {
           element.currentValue = +(
             element.totalQuantity * element.lastTradedPrice
@@ -75,6 +77,9 @@ export class DashboardComponent implements OnInit {
         this.requestExecuted = true;
         this.sharedDataService.setValue({
           holdings: this.holdings,
+        });
+        this.sharedDataService.setValue({
+          chartData: data.chartData,
         });
       },
       error: (error) => {

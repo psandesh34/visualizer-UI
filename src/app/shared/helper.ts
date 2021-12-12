@@ -39,3 +39,12 @@ export function snackbarInfo(snackbar: MatSnackBar, message: string) {
     panelClass: 'snackbarInfo',
   });
 }
+
+export function randomRGB() {
+  var letters = 'abcdef1234567890'.split('');
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * letters.length)];
+  }
+  return color;
+}

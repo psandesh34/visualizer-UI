@@ -1,11 +1,7 @@
-.main {
-  padding: 30px;
-}
-
 /* Row above the table */
 .toolsRow {
   display: flex;
-  border-radius: 25px;
+  border-radius: 10px;
   padding: 10px;
 }
 
@@ -44,12 +40,22 @@ table ng-container {
   /* border-radius: 25px; */
 }
 th:first-child {
-  border-top-left-radius: 25px;
+  border-top-left-radius: 10px;
 }
 th:last-child {
-  border-top-right-radius: 25px;
+  border-top-right-radius: 10px;
 }
 th,
 td {
   background-color: #ffffff !important;
+}
+
+.marginTop10 {
+  margin-top: 10px;
+}
+
+#divChart {
+  display: block;
+  width: 400px;
+  height: 400px;
 }

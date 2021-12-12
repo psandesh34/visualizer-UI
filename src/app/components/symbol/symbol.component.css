@@ -1,0 +1,23 @@
+.main {
+  display: flex;
+  flex-direction: row;
+  /* justify-content: space-between; */
+  /* min-height: 70%; */
+}
+
+.overview {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: left;
+  width: 20%;
+  height: 90%;
+  min-height: 70vh;
+  float: left;
+  position: sticky;
+  margin-right: 1vw;
+}
+
+.details {
+  flex-grow: 1;
+}
