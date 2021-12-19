@@ -25,3 +25,7 @@ snack-bar-container {
 .closeIcon:hover {
   cursor: pointer;
 }
+
+.icon {
+  padding-right: 5%;
+}

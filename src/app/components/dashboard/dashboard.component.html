@@ -1,5 +1,5 @@
-<div class="main centred shadow rounded25">
-  <mat-card class="rounded25">
+<!-- <div class="main centred shadow rounded25">
+  <mat-card class="rounded25" *ngIf="requestExecuted">
     <mat-card-title>Welcome user</mat-card-title>
     <mat-card-subtitle>Show user info here</mat-card-subtitle>
     <mat-card-content>
@@ -7,8 +7,12 @@
       <div>You have invested Rs. {{ totalInvestedAmount }}</div>
       <div style="padding-top: 15px">
         <div *ngIf="!totalInvestedAmount">
-          <span style="margin-right: 10px;"> You have not imported your portfolio, start here!  </span>
-          <button mat-raised-button color="primary" (click)="importTradebook()">Import</button>
+          <span style="margin-right: 10px">
+            You have not imported your portfolio, start here!
+          </span>
+          <button mat-raised-button color="primary" (click)="importTradebook()">
+            Import
+          </button>
         </div>
         <button
           mat-raised-button
@@ -21,4 +25,46 @@
       </div>
     </mat-card-content>
   </mat-card>
+</div> -->
+<div class="cards" *ngIf="requestExecuted">
+  <!-- class subsection avoids single div getting a separate row in smaller sized window -->
+  <div class="subsection">
+    <div class="stat">
+      <div class="title">Invested amount</div>
+      <div class="content">{{ totalInvestedAmount }}</div>
+    </div>
+    <div class="stat">
+      <div class="title">Current value</div>
+      <div class="content">{{ overview.currentValue }}</div>
+    </div>
+  </div>
+  <div class="subsection">
+    <div class="stat">
+      <div class="title" *ngIf="overview.currentValue >= totalInvestedAmount">Profit</div>
+      <div class="title" *ngIf="overview.currentValue < totalInvestedAmount">Loss</div>
+      <div
+        class="content"
+        [ngClass]="
+          overview.currentValue >= totalInvestedAmount ? 'profit' : 'loss'
+        "
+      >
+        {{ overview.profitLoss }}
+      </div>
+    </div>
+    <div class="stat">
+      <div class="title" *ngIf="overview.currentValue >= totalInvestedAmount">Gain</div>
+      <div class="title" *ngIf="overview.currentValue < totalInvestedAmount">Lose</div>
+      <div class="content" [ngClass]="
+      overview.currentValue >= totalInvestedAmount ? 'profit' : 'loss'
+    ">{{ overview.profitLossPercentage }}%</div>
+    </div>
+  </div>
+  <div *ngIf="!totalInvestedAmount" class="importDiv">
+    <span style="margin-right: 10px">
+      Import portfolio to see more details
+    </span>
+    <button mat-raised-button color="primary" (click)="importTradebook()">
+      Import
+    </button>
+  </div>
 </div>

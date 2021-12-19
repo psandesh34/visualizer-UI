@@ -40,6 +40,10 @@ export function snackbarInfo(snackbar: MatSnackBar, message: string) {
   });
 }
 
+export function closeSnackbar(snackbar: MatSnackBar) {
+  snackbar.dismiss();
+}
+
 export function randomRGB() {
   var letters = 'abcdef1234567890'.split('');
   var color = '#';

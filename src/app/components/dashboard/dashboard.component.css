@@ -1,7 +1,58 @@
 .main {
   margin-top: 50px;
+  max-width: 100%;
 }
 
 .mat-card {
   padding-left: 25px;
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.subsection {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  min-width: 8em;
+  border-radius: 25px;
+  margin: 1.5em;
+  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.15);
+}
+
+.title {
+  font-size: 1.1em;
+  color: dimgrey;
+  margin-bottom: 0.5em;
+}
+
+.content {
+  font-size: 1.5em;
+  font-weight: 500;
+}
+
+.importDiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.15);
+  padding: 30px;
+  min-width: 8em;
+  border-radius: 25px;
+  margin: 1.5em;
+}
+
+.mat-raised-button {
+  margin-top: 2em;
+  max-width: 7.5em;
 }

@@ -17,6 +17,9 @@ export class AppComponent {
   onNavigate(feature: string) {
     this.loadedFeature = feature;
   }
-
+  status: boolean = true;
+  clickEvent() {
+    this.status = !this.status;
+  }
   constructor(public http: HttpClient, public dialog: MatDialog) {}
 }

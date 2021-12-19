@@ -9,6 +9,7 @@ export class SharedDataService {
   private totalInvestedAmount: BehaviorSubject<any> =
     new BehaviorSubject<number>(0);
   private chartData: BehaviorSubject<any> = new BehaviorSubject<any>(undefined);
+  private overview: BehaviorSubject<any> = new BehaviorSubject<any>({});
 
   public setValue(valueObject: any): void {
     if (valueObject.hasOwnProperty('totalInvestedAmount')) {
@@ -17,6 +18,8 @@ export class SharedDataService {
       this.holdings.next(valueObject.holdings);
     } else if (valueObject.hasOwnProperty('chartData')) {
       this.chartData.next(valueObject.chartData);
+    } else if (valueObject.hasOwnProperty('overview')) {
+      this.overview.next(valueObject.overview);
     }
   }
 
@@ -27,6 +30,8 @@ export class SharedDataService {
       return this.holdings.asObservable();
     } else if (valueObject.chartData) {
       return this.chartData.asObservable();
+    } else if (valueObject.overview) {
+      return this.overview.asObservable();
     }
   }
 }

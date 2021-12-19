@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { UploadTradebookDialogComponent } from './upload-tradebook-dialog/upload-tradebook-dialog.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
-import { snackbarError, snackbarSuccess } from '../../shared/helper';
+import { closeSnackbar, snackbarError, snackbarInfo, snackbarSuccess } from '../../shared/helper';
 import { Router } from '@angular/router';
 import { SharedDataService } from 'src/app/shared/sharedDataService';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -128,26 +128,18 @@ export class PortfolioComponent implements AfterViewInit, OnInit {
   }
 
   getPortfolio() {
+    snackbarInfo(this._snackBar, 'Getting your portfolio...');
     this.http.get<any>('http://localhost:3000/holdings/myUserId').subscribe({
       next: (data) => {
+        closeSnackbar(this._snackBar);
         this.holdings = data.holdings;
         this.chartData = data.chartData;
-        this.holdings.forEach((element: any) => {
-          element.currentValue = +(
-            element.totalQuantity * element.lastTradedPrice
-          ).toFixed(2);
-          element.profitLoss = +(
-            element.currentValue - element.investedAmount
-          ).toFixed(2);
-          element.profitLossPercentage = +(
-            ((element.currentValue - element.investedAmount) /
-              element.investedAmount) *
-            100
-          ).toFixed(2);
-        });
+        this.loadTableData();
         this.sharedDataService.setValue({ holdings: this.holdings });
         this.sharedDataService.setValue({ chartData: data.chartData });
-        this.loadTableData();
+        this.sharedDataService.setValue({
+          overview: data.overview,
+        });
       },
       error: (error) => {
         snackbarError(this._snackBar, error.message);

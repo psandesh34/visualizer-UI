@@ -8,6 +8,7 @@ import {
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
+  closeSnackbar,
   snackbarError,
   snackbarInfo,
   snackbarSuccess,
@@ -57,7 +58,11 @@ export class UploadTradebookDialogComponent {
         .post(`http://localhost:3000/tradebook/upload`, formData, httpOptions)
         .subscribe({
           next: () => {
-            snackbarSuccess(this._snackBar, 'Tradebook Imported!');
+            setTimeout(() => {
+              closeSnackbar(this._snackBar);
+              snackbarInfo(this._snackBar, 'Please try refreshing the page!');
+            },
+            2000);
           },
           error: (error) => snackbarError(this._snackBar, error.message),
         });
