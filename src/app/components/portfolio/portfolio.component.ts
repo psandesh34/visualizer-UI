@@ -2,7 +2,9 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  EventEmitter,
   OnInit,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
@@ -17,6 +19,8 @@ import { Router } from '@angular/router';
 import { SharedDataService } from 'src/app/shared/sharedDataService';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Chart, registerables } from 'chart.js';
+import { FormControl } from '@angular/forms';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 Chart.register(...registerables);
 export interface UserData {
   id: string;
@@ -127,9 +131,10 @@ export class PortfolioComponent implements AfterViewInit, OnInit {
     });
   }
 
-  getPortfolio() {
+  getPortfolio(date: Date = new Date()) {
+    const stringDate = date.toString();
     snackbarInfo(this._snackBar, 'Getting your portfolio...');
-    this.http.get<any>('http://localhost:3000/holdings/myUserId').subscribe({
+    this.http.get<any>('http://localhost:3000/holdings/myUserId?holdingDate='+ stringDate).subscribe({
       next: (data) => {
         closeSnackbar(this._snackBar);
         this.holdings = data.holdings;
@@ -145,5 +150,12 @@ export class PortfolioComponent implements AfterViewInit, OnInit {
         snackbarError(this._snackBar, error.message);
       },
     });
+  }
+
+  portfolioDate = new FormControl(new Date());
+    @Output()
+    dateChange: EventEmitter<MatDatepickerInputEvent<any>> = new EventEmitter();
+    onDateChange(): void {
+      this.getPortfolio(this.portfolioDate.value);
   }
 }

@@ -3,6 +3,8 @@
   display: flex;
   border-radius: 10px;
   padding: 10px;
+  flex-direction: row;
+  justify-content: space-around;
 }
 
 button {

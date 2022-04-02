@@ -42,7 +42,9 @@ import { SnackbarComponent } from './components/snackbar/snackbar.component';
     AppRoutingModule,
   ],
   exports: [AppComponent],
-  providers: [],
+  providers: [
+    MaterialModule,
+  ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
