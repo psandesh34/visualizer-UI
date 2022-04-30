@@ -21,3 +21,8 @@
 .details {
   flex-grow: 1;
 }
+
+.tradesTable {
+  table-layout: fixed;
+  width: 100%;
+}
