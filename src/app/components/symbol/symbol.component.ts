@@ -6,11 +6,11 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 declare const TradingView: any;
 export interface TradeInterface {
-  exchange: string,
-  price: number,
-  quantity: number,
-  tradeDate: Date,
-  tradeType: string
+  exchange: string;
+  price: number;
+  quantity: number;
+  tradeDate: Date;
+  tradeType: string;
 }
 @Component({
   selector: 'app-symbol',
@@ -41,7 +41,7 @@ export class SymbolComponent implements OnInit {
     'price',
     'tradeType',
     'exchange',
-    'tradeDate'
+    'tradeDate',
   ];
   chartData = undefined;
 
@@ -51,8 +51,8 @@ export class SymbolComponent implements OnInit {
     this.symbolName = this.activatedRoute.snapshot.paramMap.get('symbolName');
     this.getSymbolDetails();
     this.getSymbolTrades();
+    this.getHistoricalData();
   }
-
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -82,9 +82,22 @@ export class SymbolComponent implements OnInit {
   }
 
   getSymbolTrades() {
-    this.http.get('http://localhost:3000/trades/myUserId?symbol=' + this.symbolName).subscribe((data: any) => {
-      this.trades = data;
-      this.loadTableData();
-    });
+    this.http
+      .get('http://localhost:3000/trades/myUserId?symbol=' + this.symbolName)
+      .subscribe((data: any) => {
+        this.trades = data;
+        this.loadTableData();
+      });
+  }
+
+  getHistoricalData() {
+    this.http
+      .get(
+        'http://localhost:3000/symbol/historical?symbol=' + this.symbolName
+      )
+      .subscribe((data: any) => {
+        this.chartData = data;
+        console.log(`SymbolComponent ~ this.http.get ~ data`, data);
+      });
   }
 }
