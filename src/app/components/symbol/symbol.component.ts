@@ -4,6 +4,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
+import { Chart } from 'chart.js';
 declare const TradingView: any;
 export interface TradeInterface {
   exchange: string;
@@ -44,6 +45,22 @@ export class SymbolComponent implements OnInit {
     'tradeDate',
   ];
   chartData = undefined;
+
+  lastYearChart = {
+    labels: [],
+    datasets: [{
+      label: 'ahahahaha this is the chart Name, take this............',
+      data: [],
+      fill: false,
+      borderColor: 'rgb(75, 192, 192)',
+      tension: 0.1
+    }]
+  };
+
+  // config = {
+  //   type: 'line',
+  //   data: this.lastYearChart,
+  // };
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -97,7 +114,24 @@ export class SymbolComponent implements OnInit {
       )
       .subscribe((data: any) => {
         this.chartData = data;
+        this.lastYearChart.labels = data.labels;
+        this.lastYearChart.datasets[0].data = data.data;
+        this.display1yLineChart();
         console.log(`SymbolComponent ~ this.http.get ~ data`, data);
       });
+  }
+
+  display1yLineChart() {
+    new Chart('lastYearChart', {
+      type: 'line',
+      data: this.lastYearChart,
+    });
+  }
+
+  displayTradesScatterPlot() {
+    // Check if we have bith the trades array and the historical data
+    if(this.chartData && this.data) {
+      
+    }
   }
 }

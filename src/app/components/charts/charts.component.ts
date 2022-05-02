@@ -113,7 +113,7 @@ export class ChartsComponent implements OnChanges, OnInit {
       labels: industrySectionLabels.concat(industrySymbolLabels),
     };
     //create Chart class object
-    var chart1 = new Chart('marketCapChart', {
+    new Chart('marketCapChart', {
       type: 'doughnut',
       data: data1,
       options: {
@@ -125,7 +125,7 @@ export class ChartsComponent implements OnChanges, OnInit {
         },
       },
     });
-    var chart2 = new Chart('industryChart', {
+    new Chart('industryChart', {
       type: 'doughnut',
       data: data2,
       options: {
