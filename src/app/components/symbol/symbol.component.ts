@@ -44,37 +44,29 @@ export class SymbolComponent implements OnInit {
     'exchange',
     'tradeDate',
   ];
-  chartData = undefined;
+  chartData = { labels: [], data: [] };
 
   lastYearChart = {
     labels: [],
-    datasets: [{
-      label: 'ahahahaha this is the chart Name, take this............',
-      data: [],
-      fill: false,
-      borderColor: 'rgb(75, 192, 192)',
-      tension: 0.1
-    }]
+    datasets: [
+      {
+        label: 'ahahahaha this is the chart Name, Random data go........',
+        data: [],
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.25,
+      },
+    ],
   };
-
-  // config = {
-  //   type: 'line',
-  //   data: this.lastYearChart,
-  // };
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   ngOnInit(): void {
     this.symbolName = this.activatedRoute.snapshot.paramMap.get('symbolName');
-    this.getSymbolDetails();
     this.getSymbolTrades();
-    this.getHistoricalData();
+    this.getSymbolHistory();
   }
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-  }
 
   loadTableData() {
     this.dataSource = new MatTableDataSource(this.trades);
@@ -90,34 +82,12 @@ export class SymbolComponent implements OnInit {
     }
   }
 
-  getSymbolDetails() {
-    this.http
-      .get('http://localhost:3000/holdings/myUserId?symbol=' + this.symbolName)
-      .subscribe((data: any) => {
-        this.data = data;
-      });
-  }
-
   getSymbolTrades() {
     this.http
       .get('http://localhost:3000/trades/myUserId?symbol=' + this.symbolName)
       .subscribe((data: any) => {
         this.trades = data;
         this.loadTableData();
-      });
-  }
-
-  getHistoricalData() {
-    this.http
-      .get(
-        'http://localhost:3000/symbol/historical?symbol=' + this.symbolName
-      )
-      .subscribe((data: any) => {
-        this.chartData = data;
-        this.lastYearChart.labels = data.labels;
-        this.lastYearChart.datasets[0].data = data.data;
-        this.display1yLineChart();
-        console.log(`SymbolComponent ~ this.http.get ~ data`, data);
       });
   }
 
@@ -130,8 +100,25 @@ export class SymbolComponent implements OnInit {
 
   displayTradesScatterPlot() {
     // Check if we have bith the trades array and the historical data
-    if(this.chartData && this.data) {
-      
+    if (this.chartData && this.data) {
     }
+  }
+
+  getSymbolHistory() {
+    this.http
+      .get('http://localhost:3000/symbol/history/myUserId?symbol=' + this.symbolName)
+      .subscribe((symbolHistory: any) => {
+        this.chartData = symbolHistory.previousYearPrices;
+        if (this.chartData) {
+          this.lastYearChart.labels = this.chartData.labels;
+          this.lastYearChart.datasets[0].data = this.chartData.data;
+          this.display1yLineChart();
+        }
+        // Info to be used for symbol sectors, industry etc
+        this.data = {
+          holding: symbolHistory.holding,
+          data: symbolHistory.trades,
+        };
+      });
   }
 }
