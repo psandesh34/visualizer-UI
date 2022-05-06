@@ -5,6 +5,28 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { Chart } from 'chart.js';
+
+// import {
+//   ChartComponent,
+//   ApexAxisChartSeries,
+//   ApexChart,
+//   ApexFill,
+//   ApexXAxis,
+//   ApexDataLabels,
+//   ApexYAxis,
+//   ApexTitleSubtitle,
+// } from 'ng-apexcharts';
+
+// export type ChartOptions = {
+//   series: ApexAxisChartSeries;
+//   chart: ApexChart;
+//   xaxis: ApexXAxis;
+//   yaxis: ApexYAxis;
+//   title: ApexTitleSubtitle;
+//   fill: ApexFill;
+//   dataLabels: ApexDataLabels;
+// };
+
 declare const TradingView: any;
 export interface TradeInterface {
   exchange: string;
@@ -21,10 +43,72 @@ export interface TradeInterface {
 export class SymbolComponent implements OnInit {
   symbolPair: any;
 
+  //Apex charts
+  // @ViewChild('chart') chart: ChartComponent;
+  // public chartOptions: Partial<ChartOptions>;
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private http: HttpClient
-  ) {}
+  ) {
+    //Apex charts data:
+    // this.chartOptions = {
+    //   series: [
+    //     {
+    //       name: 'Bubble1',
+    //       data: [
+    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
+    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
+    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
+    //       ],
+    //     },
+    //     {
+    //       name: 'Bubble2',
+    //       data: [
+    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
+    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
+    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
+    //       ],
+    //     },
+    //     {
+    //       name: 'Bubble3',
+    //       data: [
+    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
+    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
+    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
+    //       ],
+    //     },
+    //     {
+    //       name: 'Bubble4',
+    //       data: [
+    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
+    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
+    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
+    //       ],
+    //     },
+    //   ],
+    //   chart: {
+    //     height: 350,
+    //     type: 'bubble',
+    //   },
+    //   dataLabels: {
+    //     enabled: false,
+    //   },
+    //   fill: {
+    //     opacity: 0.8,
+    //   },
+    //   title: {
+    //     text: 'Simple Bubble Chart',
+    //   },
+    //   xaxis: {
+    //     tickAmount: 12,
+    //     type: 'category',
+    //   },
+    //   yaxis: {
+    //     max: 70,
+    //   },
+    // };
+  }
   @ViewChild('containerDiv', { static: false }) containerDiv: ElementRef;
   public symbolName: string | null;
   data: any = {
@@ -59,14 +143,23 @@ export class SymbolComponent implements OnInit {
     ],
   };
 
+  tradesBubbleChart = { datasets: [] };
+  // [
+  // {
+  //   label: '',
+  //   data: [],
+  //   backgroundColor: '',
+  // },
+  // ];
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   ngOnInit(): void {
     this.symbolName = this.activatedRoute.snapshot.paramMap.get('symbolName');
-    this.getSymbolTrades();
+    // this.getSymbolTrades();
     this.getSymbolHistory();
+    this.getTradeHistory();
   }
-
 
   loadTableData() {
     this.dataSource = new MatTableDataSource(this.trades);
@@ -96,6 +189,10 @@ export class SymbolComponent implements OnInit {
       type: 'line',
       data: this.lastYearChart,
     });
+    new Chart('tradesBubbleChart', {
+      type: 'bubble',
+      data: this.tradesBubbleChart,
+    });
   }
 
   displayTradesScatterPlot() {
@@ -106,7 +203,10 @@ export class SymbolComponent implements OnInit {
 
   getSymbolHistory() {
     this.http
-      .get('http://localhost:3000/symbol/history/myUserId?symbol=' + this.symbolName)
+      .get(
+        'http://localhost:3000/symbol/history/myUserId?symbol=' +
+          this.symbolName
+      )
       .subscribe((symbolHistory: any) => {
         this.chartData = symbolHistory.previousYearPrices;
         if (this.chartData) {
@@ -120,5 +220,49 @@ export class SymbolComponent implements OnInit {
           data: symbolHistory.trades,
         };
       });
+  }
+
+  getTradeHistory() {
+    this.http
+      .get(
+        'http://localhost:3000/trades/history/myUserId?symbol=' +
+          this.symbolName
+      )
+      .subscribe((data: any) => {
+        console.log(`SymbolComponent ~ .subscribe ~ data`, data);
+        this.trades = data.trades;
+        data.dataArray.forEach((element: any) => {
+          element.data.forEach((element2: any) => {
+            element2.x = new Date(element2.x).toLocaleDateString();
+          });
+        });
+
+        console.log(
+          `SymbolComponent ~ .subscribe ~ data.dataArray`,
+          data.dataArray
+        );
+        this.tradesBubbleChart = { datasets: data.dataArray };
+        this.loadTableData();
+      });
+  }
+
+  public generateData(
+    baseval: number,
+    count: number,
+    yrange: { min: number; max: number }
+  ) {
+    var i = 0;
+    var series = [];
+    while (i < count) {
+      var x = Math.floor(Math.random() * (750 - 1 + 1)) + 1;
+      var y =
+        Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
+      var z = Math.floor(Math.random() * (75 - 15 + 1)) + 15;
+
+      series.push([x, y, z]);
+      baseval += 86400000;
+      i++;
+    }
+    return series;
   }
 }

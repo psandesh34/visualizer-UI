@@ -6,7 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { MaterialModule } from './shared/material/material.module';
-// import { NgApexchartsModule } from "ng-apexcharts";
+import { NgApexchartsModule } from "ng-apexcharts";
 import { Dropdowndirective } from './shared/dropdown.directive';
 import { ChartsComponent } from './components/charts/charts.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
@@ -35,7 +35,7 @@ import { SnackbarComponent } from './components/snackbar/snackbar.component';
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    // NgApexchartsModule,
+    NgApexchartsModule,
     BrowserAnimationsModule,
     MaterialModule,
     HttpClientModule,
