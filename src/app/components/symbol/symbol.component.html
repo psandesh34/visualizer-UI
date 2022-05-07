@@ -80,11 +80,21 @@
             aria-label="Select page of trades"
           ></mat-paginator>
         </div>
-        <div>
+        <!-- <div>
           <canvas id="lastYearChart"></canvas>
-        </div>
-        <div>
-          <canvas id="tradesBubbleChart"></canvas>
+        </div> -->
+        <div id="chart" *ngIf="chartOptions">
+          <apx-chart
+            [series]="chartOptions.series"
+            [chart]="chartOptions.chart"
+            [xaxis]="chartOptions.xaxis"
+            [dataLabels]="chartOptions.dataLabels"
+            [grid]="chartOptions.grid"
+            [stroke]="chartOptions.stroke"
+            [title]="chartOptions.title"
+            [labels]="chartOptions.labels"
+            [annotations]="chartOptions.annotations"
+          ></apx-chart>
         </div>
       </mat-tab>
       <mat-tab label="Long tab">
@@ -92,15 +102,4 @@
       </mat-tab>
     </mat-tab-group>
   </div>
-  <!-- <div id="chart">
-    <apx-chart
-      [series]="chartOptions.series"
-      [chart]="chartOptions.chart"
-      [xaxis]="chartOptions.xaxis"
-      [fill]="chartOptions.fill"
-      [dataLabels]="chartOptions.dataLabels"
-      [title]="chartOptions.title"
-      [yaxis]="chartOptions.yaxis"
-    ></apx-chart>
-  </div> -->
 </div>

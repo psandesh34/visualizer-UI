@@ -26,3 +26,7 @@
   table-layout: fixed;
   width: 100%;
 }
+
+.apexcharts-point-annotation-label {
+  border: 10px solid black
+}

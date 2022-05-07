@@ -4,28 +4,29 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import { Chart } from 'chart.js';
+import {
+  ChartComponent,
+  ApexAxisChartSeries,
+  ApexChart,
+  ApexXAxis,
+  ApexDataLabels,
+  ApexTitleSubtitle,
+  ApexStroke,
+  ApexGrid,
+  ApexAnnotations,
+} from 'ng-apexcharts';
 
-// import {
-//   ChartComponent,
-//   ApexAxisChartSeries,
-//   ApexChart,
-//   ApexFill,
-//   ApexXAxis,
-//   ApexDataLabels,
-//   ApexYAxis,
-//   ApexTitleSubtitle,
-// } from 'ng-apexcharts';
-
-// export type ChartOptions = {
-//   series: ApexAxisChartSeries;
-//   chart: ApexChart;
-//   xaxis: ApexXAxis;
-//   yaxis: ApexYAxis;
-//   title: ApexTitleSubtitle;
-//   fill: ApexFill;
-//   dataLabels: ApexDataLabels;
-// };
+export type ChartOptions = {
+  series: ApexAxisChartSeries;
+  annotations: ApexAnnotations;
+  chart: ApexChart;
+  xaxis: ApexXAxis;
+  dataLabels: ApexDataLabels;
+  grid: ApexGrid;
+  labels: string[];
+  stroke: ApexStroke;
+  title: ApexTitleSubtitle;
+};
 
 declare const TradingView: any;
 export interface TradeInterface {
@@ -44,71 +45,15 @@ export class SymbolComponent implements OnInit {
   symbolPair: any;
 
   //Apex charts
-  // @ViewChild('chart') chart: ChartComponent;
-  // public chartOptions: Partial<ChartOptions>;
+  @ViewChild('chart') chart: ChartComponent;
+  public chartOptions: Partial<ChartOptions> | any;
+  public tradeAnnotationData: any = [];
+  public symbolHistory: any;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private http: HttpClient
-  ) {
-    //Apex charts data:
-    // this.chartOptions = {
-    //   series: [
-    //     {
-    //       name: 'Bubble1',
-    //       data: [
-    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
-    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
-    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
-    //       ],
-    //     },
-    //     {
-    //       name: 'Bubble2',
-    //       data: [
-    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
-    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
-    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
-    //       ],
-    //     },
-    //     {
-    //       name: 'Bubble3',
-    //       data: [
-    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
-    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
-    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
-    //       ],
-    //     },
-    //     {
-    //       name: 'Bubble4',
-    //       data: [
-    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
-    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
-    //         Math.floor(Math.random() * (750 - 1 + 1)) + 1,
-    //       ],
-    //     },
-    //   ],
-    //   chart: {
-    //     height: 350,
-    //     type: 'bubble',
-    //   },
-    //   dataLabels: {
-    //     enabled: false,
-    //   },
-    //   fill: {
-    //     opacity: 0.8,
-    //   },
-    //   title: {
-    //     text: 'Simple Bubble Chart',
-    //   },
-    //   xaxis: {
-    //     tickAmount: 12,
-    //     type: 'category',
-    //   },
-    //   yaxis: {
-    //     max: 70,
-    //   },
-    // };
-  }
+  ) {}
   @ViewChild('containerDiv', { static: false }) containerDiv: ElementRef;
   public symbolName: string | null;
   data: any = {
@@ -128,37 +73,13 @@ export class SymbolComponent implements OnInit {
     'exchange',
     'tradeDate',
   ];
-  chartData = { labels: [], data: [] };
-
-  lastYearChart = {
-    labels: [],
-    datasets: [
-      {
-        label: 'ahahahaha this is the chart Name, Random data go........',
-        data: [],
-        fill: false,
-        borderColor: 'rgb(75, 192, 192)',
-        tension: 0.25,
-      },
-    ],
-  };
-
-  tradesBubbleChart = { datasets: [] };
-  // [
-  // {
-  //   label: '',
-  //   data: [],
-  //   backgroundColor: '',
-  // },
-  // ];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   ngOnInit(): void {
     this.symbolName = this.activatedRoute.snapshot.paramMap.get('symbolName');
-    // this.getSymbolTrades();
+    this.getSymbolTrades();
     this.getSymbolHistory();
-    this.getTradeHistory();
   }
 
   loadTableData() {
@@ -180,25 +101,9 @@ export class SymbolComponent implements OnInit {
       .get('http://localhost:3000/trades/myUserId?symbol=' + this.symbolName)
       .subscribe((data: any) => {
         this.trades = data;
+        this.createApexChart();
         this.loadTableData();
       });
-  }
-
-  display1yLineChart() {
-    new Chart('lastYearChart', {
-      type: 'line',
-      data: this.lastYearChart,
-    });
-    new Chart('tradesBubbleChart', {
-      type: 'bubble',
-      data: this.tradesBubbleChart,
-    });
-  }
-
-  displayTradesScatterPlot() {
-    // Check if we have bith the trades array and the historical data
-    if (this.chartData && this.data) {
-    }
   }
 
   getSymbolHistory() {
@@ -208,12 +113,8 @@ export class SymbolComponent implements OnInit {
           this.symbolName
       )
       .subscribe((symbolHistory: any) => {
-        this.chartData = symbolHistory.previousYearPrices;
-        if (this.chartData) {
-          this.lastYearChart.labels = this.chartData.labels;
-          this.lastYearChart.datasets[0].data = this.chartData.data;
-          this.display1yLineChart();
-        }
+        this.symbolHistory = symbolHistory;
+        this.createApexChart();
         // Info to be used for symbol sectors, industry etc
         this.data = {
           holding: symbolHistory.holding,
@@ -222,47 +123,78 @@ export class SymbolComponent implements OnInit {
       });
   }
 
-  getTradeHistory() {
-    this.http
-      .get(
-        'http://localhost:3000/trades/history/myUserId?symbol=' +
-          this.symbolName
-      )
-      .subscribe((data: any) => {
-        console.log(`SymbolComponent ~ .subscribe ~ data`, data);
-        this.trades = data.trades;
-        data.dataArray.forEach((element: any) => {
-          element.data.forEach((element2: any) => {
-            element2.x = new Date(element2.x).toLocaleDateString();
-          });
-        });
-
-        console.log(
-          `SymbolComponent ~ .subscribe ~ data.dataArray`,
-          data.dataArray
-        );
-        this.tradesBubbleChart = { datasets: data.dataArray };
-        this.loadTableData();
-      });
-  }
-
-  public generateData(
-    baseval: number,
-    count: number,
-    yrange: { min: number; max: number }
-  ) {
-    var i = 0;
-    var series = [];
-    while (i < count) {
-      var x = Math.floor(Math.random() * (750 - 1 + 1)) + 1;
-      var y =
-        Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
-      var z = Math.floor(Math.random() * (75 - 15 + 1)) + 15;
-
-      series.push([x, y, z]);
-      baseval += 86400000;
-      i++;
+  createApexChart() {
+    if (!(this.symbolHistory && this.trades)) {
+      return;
     }
-    return series;
+    const annotationPoints: ApexAnnotations = {
+      points: [],
+    };
+    this.trades.forEach((trade: TradeInterface) => {
+      annotationPoints.points?.push({
+        x: new Date(trade.tradeDate).getTime(),
+        y: trade.price,
+        marker: {
+          size: 2,
+          fillColor: trade.tradeType === 'sell' ? '#EE4B2B' : '#39FF14',
+          strokeColor: trade.tradeType === 'sell' ? '#EE4B2B' : '#39FF14',
+          radius: 0,
+          cssClass: 'apexcharts-custom-class',
+        },
+        label: {
+          borderColor: trade.tradeType === 'sell' ? '#FF4560' : '#39FF14',
+          offsetY: 0,
+          style: {
+            color: trade.tradeType === 'sell' ? '#fff' : '#000',
+            background: trade.tradeType === 'sell' ? '#FF4560' : '#39FF14',
+            cssClass: 'apexcharts-point-annotation-label',
+          },
+
+          text: `${trade.tradeType}: ${trade.quantity}@${trade.price}`,
+        },
+      });
+    });
+
+    const prices = this.symbolHistory.previousYearPrices.data;
+    const labels = this.symbolHistory.previousYearPrices.labels;
+    this.chartOptions = {
+      series: [
+        {
+          name: 'series',
+          data: prices,
+        },
+      ],
+      chart: {
+        height: 350,
+        type: 'line',
+        zoom: {
+          enabled: true,
+          type: 'xy',
+          // autoScaleYaxis: true,
+        },
+      },
+      annotations: annotationPoints,
+      dataLabels: {
+        enabled: false,
+      },
+      stroke: {
+        curve: 'straight',
+        width: 2,
+      },
+      grid: {
+        padding: {
+          right: 30,
+          left: 20,
+        },
+      },
+      title: {
+        text: 'Line with Annotations',
+        align: 'left',
+      },
+      labels: labels,
+      xaxis: {
+        type: 'datetime',
+      },
+    };
   }
 }
