@@ -1,31 +1,3 @@
-<!-- <div class="main centred shadow rounded25">
-  <mat-card class="rounded25" *ngIf="requestExecuted">
-    <mat-card-title>Welcome user</mat-card-title>
-    <mat-card-subtitle>Show user info here</mat-card-subtitle>
-    <mat-card-content>
-      <div>Show investment stats here</div>
-      <div>You have invested Rs. {{ totalInvestedAmount }}</div>
-      <div style="padding-top: 15px">
-        <div *ngIf="!totalInvestedAmount">
-          <span style="margin-right: 10px">
-            You have not imported your portfolio, start here!
-          </span>
-          <button mat-raised-button color="primary" (click)="importTradebook()">
-            Import
-          </button>
-        </div>
-        <button
-          mat-raised-button
-          color="primary"
-          *ngIf="totalInvestedAmount"
-          routerLink="/portfolio"
-        >
-          View portfolio
-        </button>
-      </div>
-    </mat-card-content>
-  </mat-card>
-</div> -->
 <div class="cards" *ngIf="requestExecuted">
   <!-- class subsection avoids single div getting a separate row in smaller sized window -->
   <div class="subsection">

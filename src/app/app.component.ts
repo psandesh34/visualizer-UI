@@ -17,7 +17,7 @@ export class AppComponent {
   onNavigate(feature: string) {
     this.loadedFeature = feature;
   }
-  status: boolean = true;
+  status = true;
   clickEvent() {
     this.status = !this.status;
   }
