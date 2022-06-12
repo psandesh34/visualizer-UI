@@ -1,7 +1,6 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef,
   EventEmitter,
   OnInit,
   Output,
@@ -14,13 +13,19 @@ import { HttpClient } from '@angular/common/http';
 import { UploadTradebookDialogComponent } from './upload-tradebook-dialog/upload-tradebook-dialog.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
-import { closeSnackbar, snackbarError, snackbarInfo, snackbarSuccess } from '../../shared/helper';
+import {
+  closeSnackbar,
+  snackbarError,
+  snackbarInfo,
+  snackbarSuccess,
+} from '../../shared/helper';
 import { Router } from '@angular/router';
 import { SharedDataService } from 'src/app/shared/sharedDataService';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Chart, registerables } from 'chart.js';
 import { FormControl } from '@angular/forms';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+
 Chart.register(...registerables);
 export interface UserData {
   id: string;
@@ -134,28 +139,32 @@ export class PortfolioComponent implements AfterViewInit, OnInit {
   getPortfolio(date: Date = new Date()) {
     const stringDate = date.toString();
     snackbarInfo(this._snackBar, 'Getting your portfolio...');
-    this.http.get<any>('http://localhost:3000/holdings/myUserId?holdingDate='+ stringDate).subscribe({
-      next: (data) => {
-        closeSnackbar(this._snackBar);
-        this.holdings = data.holdings;
-        this.chartData = data.chartData;
-        this.loadTableData();
-        this.sharedDataService.setValue({ holdings: this.holdings });
-        this.sharedDataService.setValue({ chartData: data.chartData });
-        this.sharedDataService.setValue({
-          overview: data.overview,
-        });
-      },
-      error: (error) => {
-        snackbarError(this._snackBar, error.message);
-      },
-    });
+    this.http
+      .get<any>(
+        'http://localhost:3000/holdings/myUserId?holdingDate=' + stringDate
+      )
+      .subscribe({
+        next: (data) => {
+          closeSnackbar(this._snackBar);
+          this.holdings = data.holdings;
+          this.chartData = data.chartData;
+          this.loadTableData();
+          this.sharedDataService.setValue({ holdings: this.holdings });
+          this.sharedDataService.setValue({ chartData: data.chartData });
+          this.sharedDataService.setValue({
+            overview: data.overview,
+          });
+        },
+        error: (error: any) => {
+          snackbarError(this._snackBar, error.error.message);
+        },
+      });
   }
 
   portfolioDate = new FormControl(new Date());
-    @Output()
-    dateChange: EventEmitter<MatDatepickerInputEvent<any>> = new EventEmitter();
-    onDateChange(): void {
-      this.getPortfolio(this.portfolioDate.value);
+  @Output()
+  dateChange: EventEmitter<MatDatepickerInputEvent<any>> = new EventEmitter();
+  onDateChange(): void {
+    this.getPortfolio(this.portfolioDate.value);
   }
 }
